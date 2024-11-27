@@ -9,6 +9,8 @@
     <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
     <link rel="stylesheet" href="style.css">       
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Edu+AU+VIC+WA+NT+Arrows:wght@400..700&display=swap" rel="stylesheet">
+
 
     <style>
         body {
@@ -39,7 +41,7 @@
             cursor: pointer; /* 鼠标悬停显示为点击手势 */
         }
 
-        .video-container video {
+        .video-container iframe {
             width: 100%;
             height: 100%;
         }
@@ -83,7 +85,6 @@
         .text {
             position: absolute;
             font-size: 16px;
-            
         }
 
         #top-right-text {
@@ -113,6 +114,26 @@
             z-index: 1;
             font-family: Snell Roundhand;
         }
+        #video1-text {
+            position: absolute;
+            top: 10px; /* 视频上方 */
+            left: 50px; /* 与视频对齐 */
+            font-family: "Edu AU VIC WA NT Arrows";
+            font-size: 18px;
+            color: white;
+         
+        }
+
+        #video2-text {
+            position: absolute;
+            bottom: 10px; /* 视频下方 */
+            right: 50px; /* 与视频对齐 */
+            font-family: "Edu AU VIC WA NT Arrows";
+            font-size: 18px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* 增加阴影效果 */
+        }
+
         #top-left-image, #bottom-right-image {
             position: absolute;
             cursor: pointer;
@@ -131,32 +152,52 @@
             width: 515px; /* 根据需要调整图片大小 */
             height: 300px;
         }
+
+        /* 新增文字样式 */
+       
     </style>
 </head>
 <body>
     <div id="canvas-parent"></div>
+
+    <!-- 视频容器 - 视频1 -->
     <div class="video-container" id="video1-container">
-        <video id="video1">
-            <source src="video2.mp4" type="video/mp4">
-        </video>
+        <iframe id="video1" 
+                src="https://www.youtube.com/embed/1xWi1bpyFCs?si=eyXf71JaYA0klFX7" 
+                frameborder="0" 
+                allow="autoplay; encrypted-media" 
+                allowfullscreen>
+        </iframe>
         <div class="play-icon"></div>
     </div>
+    <!-- 视频1上方文字 -->
+    <div id="video1-text">Immersive Perspective</div>
+
+    <!-- 视频容器 - 视频2 -->
     <div class="video-container" id="video2-container">
-        <video id="video2">
-            <source src="video1.mp4" type="video/mp4">
-        </video>
+        <iframe id="video2" 
+                src="https://www.youtube.com/embed/aS1ns2F9MW0?si=dmpTOolwlofrzPK-" 
+                frameborder="0" 
+                allow="autoplay; encrypted-media" 
+                allowfullscreen>
+        </iframe>
         <div class="play-icon"></div>
     </div>
+    <!-- 视频2下方文字 -->
+    <div id="video2-text">See Artist's Perspective</div>
+
     <div class="text" id="top-right-text">All the stars have arrived, haven't you come yet?</div>
     <div class="text" id="bottom-left-text">I waited for a long time, waiting for the stars to come out, <br>then it was dawn.</div>
-    <div id="center-title">Right  where  you  left  me</div>
+    <div id="center-title">Right where you left me</div>
 
     <img id="top-left-image" src="picture1.png" alt="Top Left Image">
     <img id="bottom-right-image" src="picture2.png" alt="Bottom Right Image">
+
     <script src="starship.js"></script>
     <script>
         // 自动全屏函数
-        function playFullscreen(videoElement) {
+        function playFullscreen(iframe) {
+            const videoElement = iframe.contentWindow.document.querySelector('video');
             if (videoElement.requestFullscreen) {
                 videoElement.requestFullscreen();
             } else if (videoElement.mozRequestFullScreen) { // Firefox
@@ -171,17 +212,17 @@
         // 视频点击事件监听
         const videoContainers = document.querySelectorAll(".video-container");
         videoContainers.forEach(container => {
-            const video = container.querySelector("video");
+            const iframe = container.querySelector("iframe");
             const playIcon = container.querySelector(".play-icon");
 
             container.addEventListener("click", () => {
                 playIcon.style.display = "none"; // 隐藏播放图标
-                video.play();
-                playFullscreen(video);
+                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); // 播放 YouTube 视频
+                playFullscreen(iframe); // 进入全屏
             });
 
             // 暂停时恢复播放图标
-            video.addEventListener("pause", () => {
+            iframe.addEventListener("pause", () => {
                 playIcon.style.display = "flex";
             });
         });
@@ -198,8 +239,8 @@
         document.addEventListener("fullscreenchange", () => {
             if (!document.fullscreenElement) {
                 videoContainers.forEach(container => {
-                    const video = container.querySelector("video");
-                    video.pause();
+                    const iframe = container.querySelector("iframe");
+                    iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); // 暂停 YouTube 视频
                 });
             }
         });
