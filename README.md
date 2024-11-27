@@ -1,8 +1,10 @@
 # Video-Group-4
 Project Documentation: Interactive Video 
 Project Overview
+
 Title:
 Heartbreaks and Art Blocks 
+
 Story:
 Heartbreaks and Artblocks  follows the story of a young couple who have an argument in a restaurant. Unbeknownst to them, a young artist is observing their confrontation, drawing inspiration for her next art piece. The narrative unfolds through the distinct perspectives of two women: one is the girl in the troubled relationship, and the other is the artist witnessing the scene. The story explores how one man's sorrow becomes the other's source of creative joy, ultimately connecting two seemingly unrelated individuals through shared experiences.
 The primary aim of the project is to create a dramatic, yet subtle, narrative that invites the audience to engage with the unfolding events from multiple viewpoints. By offering these two perspectives, the film encourages viewers to empathize with both characters, challenging their assumptions and deepening their emotional connection to the story.
