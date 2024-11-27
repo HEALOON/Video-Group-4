@@ -1,1 +1,208 @@
-<!-- Website for video group -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Right where you left me</title>
+    <script src="p5lib/p5.js"></script>
+    <script src="p5lib/p5.sound.min.js"></script>
+    <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
+    <link rel="stylesheet" href="style.css">       
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+            font-family: cursive, sans-serif;
+            color: white;
+        }
+
+        #canvas-parent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* 保证背景在最底层 */
+        }
+
+        .video-container {
+            position: absolute;
+            border: 1px solid gold; /* 金色边框 */
+            border-radius: 8px; /* 圆角边框 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer; /* 鼠标悬停显示为点击手势 */
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-container .play-icon {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.6); /* 半透明黑色背景 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .video-container .play-icon::before {
+            content: '';
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 16px solid white; /* 三角形颜色 */
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+
+        #video1-container {
+            top: 50px; /* 向下移动 */
+            left: 50px; /* 向右移动 */
+            width: 480px; /* 视频宽度 */
+            height: 270px; /* 视频高度 */
+        }
+
+        #video2-container {
+            bottom: 50px; /* 向上移动 */
+            right: 50px; /* 向左移动 */
+            width: 480px; /* 视频宽度 */
+            height: 270px; /* 视频高度 */
+        }
+
+        .text {
+            position: absolute;
+            font-size: 16px;
+            
+        }
+
+        #top-right-text {
+            top: 180px; /* 向下移动 */
+            right: 160px; /* 向左移动 */
+            font-family: "Dancing Script", cursive;
+            font-size: 28px;
+        }
+
+        #bottom-left-text {
+            text-align: center;
+            bottom: 150px; /* 向上移动 */
+            left: 50px; /* 向右移动 */
+            font-family: "Dancing Script", cursive;
+            font-size: 28px;
+        }
+
+        #center-title {
+            color: goldenrod;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 55px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1;
+            font-family: Snell Roundhand;
+        }
+        #top-left-image, #bottom-right-image {
+            position: absolute;
+            cursor: pointer;
+        }
+
+        #top-left-image {
+            top: 40px;
+            left: 33px;
+            width: 515px; /* 根据需要调整图片大小 */
+            height: 300px;
+        }
+
+        #bottom-right-image {
+            bottom: 33px;
+            right: 33px;
+            width: 515px; /* 根据需要调整图片大小 */
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-parent"></div>
+    <div class="video-container" id="video1-container">
+        <video id="video1">
+            <source src="video2.mp4" type="video/mp4">
+        </video>
+        <div class="play-icon"></div>
+    </div>
+    <div class="video-container" id="video2-container">
+        <video id="video2">
+            <source src="video1.mp4" type="video/mp4">
+        </video>
+        <div class="play-icon"></div>
+    </div>
+    <div class="text" id="top-right-text">All the stars have arrived, haven't you come yet?</div>
+    <div class="text" id="bottom-left-text">I waited for a long time, waiting for the stars to come out, <br>then it was dawn.</div>
+    <div id="center-title">Right  where  you  left  me</div>
+
+    <img id="top-left-image" src="picture1.png" alt="Top Left Image">
+    <img id="bottom-right-image" src="picture2.png" alt="Bottom Right Image">
+    <script src="starship.js"></script>
+    <script>
+        // 自动全屏函数
+        function playFullscreen(videoElement) {
+            if (videoElement.requestFullscreen) {
+                videoElement.requestFullscreen();
+            } else if (videoElement.mozRequestFullScreen) { // Firefox
+                videoElement.mozRequestFullScreen();
+            } else if (videoElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                videoElement.webkitRequestFullscreen();
+            } else if (videoElement.msRequestFullscreen) { // IE/Edge
+                videoElement.msRequestFullscreen();
+            }
+        }
+
+        // 视频点击事件监听
+        const videoContainers = document.querySelectorAll(".video-container");
+        videoContainers.forEach(container => {
+            const video = container.querySelector("video");
+            const playIcon = container.querySelector(".play-icon");
+
+            container.addEventListener("click", () => {
+                playIcon.style.display = "none"; // 隐藏播放图标
+                video.play();
+                playFullscreen(video);
+            });
+
+            // 暂停时恢复播放图标
+            video.addEventListener("pause", () => {
+                playIcon.style.display = "flex";
+            });
+        });
+
+        document.getElementById("top-left-image").addEventListener("click", () => {
+            document.getElementById("top-left-image").style.display = "none";
+        });
+
+        document.getElementById("bottom-right-image").addEventListener("click", () => {
+            document.getElementById("bottom-right-image").style.display = "none";
+        });
+
+        // 全屏退出事件监听
+        document.addEventListener("fullscreenchange", () => {
+            if (!document.fullscreenElement) {
+                videoContainers.forEach(container => {
+                    const video = container.querySelector("video");
+                    video.pause();
+                });
+            }
+        });
+    </script>
+</body>
+</html>
